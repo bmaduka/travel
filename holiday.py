@@ -4,13 +4,9 @@ import chromedriver_binary
 
 from selenium import webdriver
 # !chromedriver_binary was installed by pip!
-from selenium.webdriver import Keys
+from selenium.webdriver.common.keys import Keys
 import pyautogui
-
-
 from selenium.webdriver.common.by import By
-
-# from selenium.webdriver.support import expected_conditions
 # from selenium.webdriver.support.select import Select
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
@@ -24,15 +20,13 @@ chrome_options.add_argument("--ignore-certificate-errors")
 
 driver = webdriver.Chrome(options=chrome_options)
 driver.get("https://www.onthebeach.co.uk/")
-driver.implicitly_wait(10)
+driver.implicitly_wait(5)
 
-try:
-    setting = driver.find_element(By.XPATH, "//button/span[contains(text(),'Settings')]")
-    driver.execute_script("arguments[0].click();", setting)
-    driver.find_element(By.ID, "ccc-recommended-settings").click()
-except Exception as e:
-    time.sleep(3)
-    (e, driver.find_element(By.XPATH, "//div/button[@id='ccc-recommended-settings']").click())
+
+setting = driver.find_element(By.XPATH, "//button/span[contains(text(),'Settings')]")
+driver.execute_script("arguments[0].click();", setting)
+driver.find_element(By.ID, "ccc-recommended-settings").click()
+
 
 close = driver.find_element(By.XPATH, "//div[@class='input-select__clear']/button/span")
 driver.execute_script("arguments[0].click();", close)
@@ -100,7 +94,7 @@ pages = driver.find_elements(By.XPATH, "//div[@class='pagination__page-number-wr
 for i in range(0, len(pages)):
     holidays = driver.find_elements(By.XPATH, "//section/h2[@class='holiday-finder-results__hotel-name']")
     for holiday in holidays:
-        if "Glories" in holiday.text:
+        if "benz" in holiday.text:
             choice = holiday.find_element(By.XPATH,
                                           "parent::section/parent::header/parent::div/section[2]/footer/div/a")
             driver.execute_script("arguments[0].click();", choice)
