@@ -71,11 +71,9 @@ class TestHoliday(BaseClass):
         while num_bags.text != "3":
             add_bag = holidaypage.getAdd_bag()
             self.JSE(add_bag)
-
             time.sleep(5)
             num_bags = holidaypage.getNum_bags()
         pages = holidaypage.getPages()
-
         for i in range(0, len(pages)):
             holidays = holidaypage.getHolidays()
             for holiday in holidays:
@@ -83,8 +81,7 @@ class TestHoliday(BaseClass):
                     choice = holiday.find_element(By.XPATH,
                                                   "parent::section/parent::header/parent::div/section[2]/footer/div/a")
                     self.JSE(choice)
-
-                    time.sleep(3)
+                    time.sleep(2)
                     break
             else:
                 try:
@@ -92,8 +89,8 @@ class TestHoliday(BaseClass):
                     self.JSE(nxt)
                     time.sleep(3)
                     continue
-                except Exception as e:
-                    log.info(e, "no match found!")
+                except:
+                    log.info("no match found!")
                     break
 
         time.sleep(3)
