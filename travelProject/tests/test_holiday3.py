@@ -1,20 +1,16 @@
-import time
 
+import time
 import chromedriver_binary
 import pytest
-from selenium import webdriver
-from selenium.webdriver import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+from utilities.BaseClass import BaseClass
 
 
 @pytest.mark.smoke
-class TestHoliday3:
+class TestHoliday3(BaseClass):
     def test_holiday3(self):
-        chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument("--start-maximized")
-        driver = webdriver.Chrome(options=chrome_options)
-
+        driver = self.driver
         driver.get("https://www.expedia.co.uk/")
         time.sleep(2)
         driver.find_element(By.XPATH, "//button[contains(@class, 'osano-cm-denyAll')]").click()
@@ -23,5 +19,6 @@ class TestHoliday3:
         x = driver.find_element(By.ID, "location-field-location")
         x.send_keys("Barcelona")
         x.send_keys(Keys.ENTER)
-        driver.find_element(By.XPATH, "//button[contains(text(), 'Search')]").click()
-        time.sleep(3)
+        driver.find_element(By.XPATH, "//button[contains(text(), 'Searchh')]").click()
+        driver.quit()
+

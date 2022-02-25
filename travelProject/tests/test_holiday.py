@@ -12,22 +12,29 @@ from pageObjects.holidayPage import HolidayPage
 from pageObjects.homePage import HomePage
 
 from utilities.BaseClass import BaseClass
-#import sys
-#sys.path.append('/')
+
+
+# import sys
+# sys.path.append('/')
 
 
 class TestHoliday(BaseClass):
     def test_holiday(self, getData):
         driver = self.driver
         log = self.getLogger()
+        driver.get("https://www.onthebeach.co.uk/")
         homepage = HomePage(self.driver)
         holidaypage = HolidayPage(self.driver)
-        setting = homepage.getSetting()
-        self.JSE(setting)
-        homepage.getRecset().click()
-        close = homepage.getClose()
-        self.JSE(close)
-        log.info("cookie preference was selected")
+        try:
+            setting = homepage.getSetting()
+            self.JSE(setting)
+            homepage.getRecset().click()
+            close = homepage.getClose()
+            self.JSE(close)
+            log.info("cookie preference was selected")
+        except:
+            pass
+
         self.waiter(By.XPATH, "//input[@name='destination']")
 
         homepage.getDestination().send_keys(getData["destination"])

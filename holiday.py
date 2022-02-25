@@ -39,7 +39,7 @@ where_to.send_keys("Barcelona")
 driver.find_element(By.XPATH, "//div[@class='tabset']/button[1]").click()
 wait.until(expected_conditions.presence_of_element_located(
     (By.XPATH, "//section[@class='search-form']/div/section/div[2]/div/button")))
-
+#try--driver.find_element(By.XPATH, "//div[@class='email-catcher__close']")
 checkbx = driver.find_element(By.XPATH, "//section[@class='search-form']/div/section/div[2]/div/button")
 checkbx.send_keys(Keys.ENTER)
 # driver.execute_script("document.getElementsByTagName('span')[53].click();")
@@ -94,7 +94,7 @@ pages = driver.find_elements(By.XPATH, "//div[@class='pagination__page-number-wr
 for i in range(0, len(pages)):
     holidays = driver.find_elements(By.XPATH, "//section/h2[@class='holiday-finder-results__hotel-name']")
     for holiday in holidays:
-        if "benz" in holiday.text:
+        if "Atenas" in holiday.text:
             choice = holiday.find_element(By.XPATH,
                                           "parent::section/parent::header/parent::div/section[2]/footer/div/a")
             driver.execute_script("arguments[0].click();", choice)
@@ -109,7 +109,7 @@ for i in range(0, len(pages)):
             break
 
 # time.sleep(3)
-driver.find_element(By.XPATH, "//form[@action='/basket/holidays']/button").click()
+driver.find_element(By.XPATH, "//button[contains(@class,'button--primary button--push-down')]").click()
 # time.sleep(3)
 try:
     driver.find_element(By.XPATH, "//span[contains(@class,'notice__close')]").click()
