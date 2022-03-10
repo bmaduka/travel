@@ -14,15 +14,12 @@ from pageObjects.homePage import HomePage
 from utilities.BaseClass import BaseClass
 
 
-# import sys
-# sys.path.append('/')
-
-
 class TestHoliday(BaseClass):
     def test_holiday(self, getData):
         driver = self.driver
-        log = self.getLogger()
         driver.get("https://www.onthebeach.co.uk/")
+        driver.refresh()
+        log = self.getLogger()
         homepage = HomePage(self.driver)
         holidaypage = HolidayPage(self.driver)
         try:
@@ -32,23 +29,30 @@ class TestHoliday(BaseClass):
             close = homepage.getClose()
             self.JSE(close)
             log.info("cookie preference was selected")
-        except:
+        except Exception as e:
+            log.info(e)
+            pass
+        time.sleep(7)
+        try:
+            # self.waiter2(By.XPATH, "//div[@class='email-catcher__close']")
+            closer = driver.find_element(By.XPATH, "//div[@class='email-catcher__close']")
+            driver.execute_script("arguments[0].click();", closer)
+            driver.find_element(By.XPATH, "//div[@aria-label='Close']")
+        except Exception as e:
+            log.info(e)
             pass
 
         self.waiter(By.XPATH, "//input[@name='destination']")
-
         homepage.getDestination().send_keys(getData["destination"])
-
         homepage.getFlight().click()
         self.waiter(By.XPATH, "//section[@class='search-form']/div/section/div[2]/div/button")
+        homepage.getCheckbx().send_keys(Keys.ENTER)
         homepage.getCheckbx().send_keys(Keys.ENTER)
         self.waiter(By.XPATH, "//label[@for='search[departure_points]']")
         airports = homepage.getAirports()
         for airport in airports:
-
             if getData["homeAirport"] in airport.text:
                 self.JSE(airport)
-
                 break
         homepage.getDeparture_date().click()
         month = homepage.getMonth()
@@ -75,7 +79,7 @@ class TestHoliday(BaseClass):
         self.waiter(By.XPATH, "//div[@class='input-counter__quantity']")
         log.info("holiday search button clicked")
         num_bags = holidaypage.getNum_bags()
-        while num_bags.text != "3":
+        while num_bags.text != "1":
             add_bag = holidaypage.getAdd_bag()
             self.JSE(add_bag)
             time.sleep(5)
@@ -96,8 +100,8 @@ class TestHoliday(BaseClass):
                     self.JSE(nxt)
                     time.sleep(3)
                     continue
-                except:
-                    log.info("no match found!")
+                except Exception as e:
+                    log.info(e)
                     break
 
         time.sleep(3)
@@ -107,12 +111,15 @@ class TestHoliday(BaseClass):
         try:
             holidaypage.getNotice().click()
 
-        except:
+        except Exception as e:
+            log.info(e)
             pass
         time.sleep(2)
         driver.execute_script("document.getElementsByTagName('button')[15].click();")
 
+        time.sleep(3)
+
+
     @pytest.fixture(params=HomePageData.test_Data)
     def getData(self, request):
         return request.param
-        # driver.save_screenshot('screen_shot.png')

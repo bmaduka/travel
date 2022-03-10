@@ -1,14 +1,16 @@
-import os
+
 import time
 import chromedriver_binary
 
 from selenium import webdriver
+
 import pytest
 
 # from selenium.webdriver import firefox
 
 # from selenium.webdriver.firefox import webdriver
 # from selenium.webdriver.chrome import webdriver
+
 
 driver = None
 
@@ -35,38 +37,36 @@ def loadUp(request):
     request.cls.driver = driver
 
     yield
-    time.sleep(3)
+    time.sleep(1)
     driver.close()
 
 
-@pytest.hookimpl(hookwrapper=True)
+@pytest.mark.hookwrapper
 def pytest_runtest_makereport(item):
-    pytest_html = item.config.pluginmanager.getplugin("html")
+    """
+        Extends the PyTest Plugin to take and embed screenshot in html report, whenever test fails.
+        :param item:
+        """
+    pytest_html = item.config.pluginmanager.getplugin('html')
     outcome = yield
     report = outcome.get_result()
-    extra = getattr(report, "extra", [])
-    if report.when == "call":
-        # always add url to report
-        extra.append(pytest_html.extras.url("https://www.expedia.co.uk/"))
-        xfail = hasattr(report, "wasxfail")
+    extra = getattr(report, 'extra', [])
+
+    if report.when == 'call' or report.when == "setup":
+        xfail = hasattr(report, 'wasxfail')
         if (report.skipped and xfail) or (report.failed and not xfail):
-            # only add additional html on failure
-            report_directory = os.path.dirname(item.config.option.htmlpath)
-            # file_name = str(int(round(time.time()*1000)))+".png"
             file_name = report.nodeid.replace("::", "_") + ".png"
-            destinationFile = os.path.join(report_directory+"..\\reports", file_name)
-            driver.save_screenshot(destinationFile)
-            #driver.get_screenshot_as_base64()
-
+            _capture_screenshot(file_name)
             if file_name:
-                html = '<div><img src = "%s" alt="screenshot" style="width:300px;height=200px"' 'onclick="window' \
-                       '.open(this.src)" align="right"/></div>' % file_name
+                html = '<div><img src="%s" alt="screenshot" style="width:304px;height:228px;" ' \
+                       'onclick="window.open(this.src)" align="right"/></div>' % file_name
                 extra.append(pytest_html.extras.html(html))
-            report.extra = extra
+        report.extra = extra
 
 
-def pytest_html_report_title(report):
-    report.title = "Python Automation Report"
+def _capture_screenshot(name):
+    driver.get_screenshot_as_file(name)
+
 
 # cmd -  pytest -k test_holiday --html=..\reports\report.html
 '''
